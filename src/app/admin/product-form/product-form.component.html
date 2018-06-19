@@ -1,0 +1,47 @@
+<div class="row">
+  <div class="col-md-6">
+    <form #f="ngForm" (ngSubmit)="save(f.value)">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input #title="ngModel" [(ngModel)]="product['title']" name="title" id="title" type="text" class="form-control" required>
+        <div *ngIf="title.touched && title.invalid" class="alert alert-danger">Title is required.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="price">Price</label>
+        <div class="input-group-prepend">
+          <span class="input-group-text">$</span>
+          <input #price="ngModel" [(ngModel)]="product['price']" name="price" id="price" type="number" class="form-control" required [min]="0">
+          <!-- [min]="0" ng2-validation lib-->
+        </div>
+        <div *ngIf="price.touched && price.invalid" class="alert alert-danger">
+          <div *ngIf="price.errors.required">Price is required.</div>
+          <div *ngIf="price.errors.min">Price should be 0 or higher.</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="category">Category</label>
+        <select #category="ngModel" [(ngModel)]="product['category']" name="category" id="category" class="form-control" required>
+          <option value=""></option>
+          <option *ngFor="let category of categories$ | async " value="{{ category.$key }}">{{ category.name }}</option>
+        </select>
+        <div *ngIf="category.touched && category.invalid" class="alert alert-danger">Category is required.</div>
+      </div>
+      <div class="form-group">
+        <label for="imageURL">image URL</label>
+        <input #imageURL="ngModel" [(ngModel)]="product['imageUrl']" name="imageURL" id="imageURL" type="text" class="form-control" required url>
+        <div *ngIf="imageURL.touched && imageURL.invalid" class="alert alert-danger">
+          <div *ngIf="imageURL.errors.required">Image URL is required.</div>
+          <div *ngIf="imageURL.errors.url">Incorrect URL format.</div>
+        </div>
+      </div>
+      <button [disabled]="f.invalid" class="btn btn-primary">Save</button>
+      <button [hidden]="!id" class="btn btn-danger" (click)="delete()" type="button">Delete</button>
+    </form>
+  </div> 
+<!-- end form -->
+  <div class="col-md-6" >
+      <app-product-card [product]="product" [show-action]="false"></app-product-card>
+  </div>
+</div>
